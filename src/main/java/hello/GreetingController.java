@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RestController
 public class GreetingController {
 
-    private static final String TEMPLATE = "Hellooo, %s!";
+    private static final String TEMPLATE = "Hello, %s!";
 
     @RequestMapping("/greeting")
     public HttpEntity<Greeting> greeting(
