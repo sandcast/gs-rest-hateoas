@@ -19,6 +19,14 @@ package hello;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.net.URI;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.security.auth.login.LoginException;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import org.junit.Ignore;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -29,17 +37,34 @@ import org.springframework.hateoas.MediaTypes;
 import org.springframework.hateoas.client.Traverson;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class GreetingTraversonIntegrationTests {
 
     @LocalServerPort
     private int port;
 
-    @Test
+    @Ignore
     public void envEndpointNotHidden() throws Exception {
         Traverson traverson = new Traverson(new URI("http://localhost:" + this.port + "/greeting"), MediaTypes.HAL_JSON);
         String greeting = traverson.follow("self").toObject("$.content");
         assertThat(greeting).isEqualTo("Hello, World!");
+    }
+    
+    @Test public void testDiscord() {
+                try {
+            JDA jda = new JDABuilder(AccountType.BOT).setToken("MjgwMzk5NDk5NDAxMzYzNDU3.C4JfLQ.WOiQETJ4j87yJdGfVkzvXoTgcy4").buildBlocking();
+            jda.getTextChannels().forEach(t->{t.sendMessage("hi").complete();
+             Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, t.getName());
+            });
+        } catch (LoginException ex) {
+            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (RateLimitedException ex) {
+            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }

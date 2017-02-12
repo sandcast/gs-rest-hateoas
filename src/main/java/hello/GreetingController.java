@@ -25,11 +25,15 @@ public class GreetingController {
 
     private static final String TEMPLATE = "Hello, %s!";
     private List<String> logs = new ArrayList<>();
+    private JDA jda;
 
-    public void x() {
+    public GreetingController() {
         try {
-            JDA jda = new JDABuilder(AccountType.BOT).setToken("MjgwMzk5NDk5NDAxMzYzNDU3.C4JfLQ.WOiQETJ4j87yJdGfVkzvXoTgcy4").buildBlocking();
-            jda.getTextChannels().forEach(t->{t.sendMessage("hi");});
+            jda = new JDABuilder(AccountType.BOT).setToken("MjgwMzk5NDk5NDAxMzYzNDU3.C4JfLQ.WOiQETJ4j87yJdGfVkzvXoTgcy4").buildBlocking();
+            jda.getTextChannels().forEach(t -> {
+                t.sendMessage("Hearst is loading").complete();
+                Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, t.getName());
+            });
         } catch (LoginException ex) {
             Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IllegalArgumentException ex) {
@@ -52,6 +56,10 @@ public class GreetingController {
     @RequestMapping(method = RequestMethod.POST, path = "/message")
     public HttpEntity<String> postMessage(@RequestBody String body) {
         logs.add(body);
+         jda.getTextChannels().forEach(t -> {
+                t.sendMessage(body).complete();
+                Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, body);
+            });
         return new ResponseEntity<String>(body, HttpStatus.OK);
     }
 
