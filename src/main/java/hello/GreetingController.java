@@ -2,6 +2,14 @@ package hello;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.security.auth.login.LoginException;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Channel;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -17,6 +25,21 @@ public class GreetingController {
 
     private static final String TEMPLATE = "Hello, %s!";
     private List<String> logs = new ArrayList<>();
+
+    public void x() {
+        try {
+            JDA jda = new JDABuilder(AccountType.BOT).setToken("MjgwMzk5NDk5NDAxMzYzNDU3.C4JfLQ.WOiQETJ4j87yJdGfVkzvXoTgcy4").buildBlocking();
+            jda.getTextChannels().forEach(t->{t.sendMessage("hi");});
+        } catch (LoginException ex) {
+            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InterruptedException ex) {
+            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (RateLimitedException ex) {
+            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     @RequestMapping("/greeting")
     public HttpEntity<Greeting> greeting(
