@@ -9,7 +9,10 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Channel;
+import net.dv8tion.jda.core.events.Event;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.core.hooks.EventListener;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -30,6 +33,7 @@ public class GreetingController {
     public GreetingController() {
         try {
             jda = new JDABuilder(AccountType.BOT).setToken("MjgwMzk5NDk5NDAxMzYzNDU3.C4JfLQ.WOiQETJ4j87yJdGfVkzvXoTgcy4").buildBlocking();
+            jda.addEventListener(new Test());
             jda.getTextChannels().forEach(t -> {
                 t.sendMessage("Hearst is loading").complete();
                 Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, t.getName());
@@ -56,10 +60,10 @@ public class GreetingController {
     @RequestMapping(method = RequestMethod.POST, path = "/message")
     public HttpEntity<String> postMessage(@RequestBody String body) {
         logs.add(body);
-         jda.getTextChannels().forEach(t -> {
-                t.sendMessage(body).complete();
-                Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, body);
-            });
+        jda.getTextChannels().forEach(t -> {
+            t.sendMessage(body).complete();
+            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, body);
+        });
         return new ResponseEntity<String>(body, HttpStatus.OK);
     }
 
@@ -72,5 +76,18 @@ public class GreetingController {
     public HttpEntity<String> deleteMessage() {
         logs.clear();
         return new ResponseEntity<String>(String.join("/", logs), HttpStatus.OK);
+    }
+}
+
+class Test implements EventListener {
+
+    @Override
+    public void onEvent(Event event) {
+        if (event instanceof MessageReceivedEvent) {
+            MessageReceivedEvent e = (MessageReceivedEvent) event;
+            System.out.println(e.getMessage().getContent());
+            if (!e.getAuthor().isBot())
+            e.getChannel().sendMessage("simon says " + e.getMessage().getContent());
+        }
     }
 }
