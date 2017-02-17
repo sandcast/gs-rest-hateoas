@@ -86,8 +86,9 @@ class Test implements EventListener {
         if (event instanceof MessageReceivedEvent) {
             MessageReceivedEvent e = (MessageReceivedEvent) event;
             System.out.println(e.getMessage().getContent());
-            if (!e.getAuthor().isBot())
-            e.getChannel().sendMessage("simon says " + e.getMessage().getContent());
+//            if (!e.getAuthor().isBot()) {
+                e.getChannel().sendMessage("simon says " + e.getMessage().getContent());
+//            }
         }
     }
 }
