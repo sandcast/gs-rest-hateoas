@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package hello;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
 import java.net.URI;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -27,7 +25,6 @@ import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.junit.Ignore;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.context.embedded.LocalServerPort;
@@ -50,12 +47,14 @@ public class GreetingTraversonIntegrationTests {
         String greeting = traverson.follow("self").toObject("$.content");
         assertThat(greeting).isEqualTo("Hello, World!");
     }
-    
-    @Test public void testDiscord() {
-                try {
-            JDA jda = new JDABuilder(AccountType.BOT).setToken("MjgwMzk5NDk5NDAxMzYzNDU3.C4JfLQ.WOiQETJ4j87yJdGfVkzvXoTgcy4").buildBlocking();
-            jda.getTextChannels().forEach(t->{t.sendMessage("hi").complete();
-             Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, t.getName());
+
+    @Ignore
+    public void testDiscord() {
+        try {
+            JDA jda = new JDABuilder(AccountType.BOT).setToken(System.getenv("API_TOKEN")).buildBlocking();
+            jda.getTextChannels().forEach(t -> {
+                t.sendMessage("hi").complete();
+                Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, t.getName());
             });
         } catch (LoginException ex) {
             Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);

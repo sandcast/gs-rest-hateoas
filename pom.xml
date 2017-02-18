@@ -33,6 +33,11 @@
             <artifactId>json-path</artifactId>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>com.patreon</groupId>
+            <artifactId>patreon</artifactId>
+            <version>0.1.1</version>
+        </dependency>
     </dependencies>
 
     <properties>
