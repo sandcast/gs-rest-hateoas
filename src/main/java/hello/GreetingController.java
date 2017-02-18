@@ -51,6 +51,11 @@ public class GreetingController {
         }
         API apiClient = new API(System.getenv("PATREON_API_TOKEN"));
         JSONObject userResponse = apiClient.fetchCampaign();
+        
+          jda.getTextChannels().forEach(t -> {
+                t.sendMessage("Hearst found patreon campaign " + userResponse.toString(2)).complete();
+                Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, t.getName());
+            });
         JSONObject user = userResponse.getJSONObject("data");
         JSONArray included = userResponse.getJSONArray("included");
         String reward = null;
