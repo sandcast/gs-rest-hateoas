@@ -8,7 +8,6 @@ import javax.security.auth.login.LoginException;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Channel;
 import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
@@ -32,19 +31,15 @@ public class GreetingController {
 
     public GreetingController() {
         try {
-            jda = new JDABuilder(AccountType.BOT).setToken("MjgwMzk5NDk5NDAxMzYzNDU3.C4JfLQ.WOiQETJ4j87yJdGfVkzvXoTgcy4").buildBlocking();
+            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, "name from env=" + System.getenv("DISCORD_TOKEN"));
+            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, "name from cli=" + System.getProperty("DISCORD_TOKEN"));
+            jda = new JDABuilder(AccountType.BOT).setToken(System.getenv("DISCORD_TOKEN")).buildBlocking();
             jda.addEventListener(new Test());
             jda.getTextChannels().forEach(t -> {
                 t.sendMessage("Hearst is loading").complete();
                 Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, t.getName());
             });
-        } catch (LoginException ex) {
-            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IllegalArgumentException ex) {
-            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (InterruptedException ex) {
-            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (RateLimitedException ex) {
+        } catch (LoginException | IllegalArgumentException | InterruptedException | RateLimitedException ex) {
             Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
@@ -64,18 +59,18 @@ public class GreetingController {
             t.sendMessage(body).complete();
             Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, body);
         });
-        return new ResponseEntity<String>(body, HttpStatus.OK);
+        return new ResponseEntity<>(body, HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/message")
     public HttpEntity<String> getMessage() {
-        return new ResponseEntity<String>(String.join("/", logs), HttpStatus.OK);
+        return new ResponseEntity<>(String.join("/", logs), HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/message")
     public HttpEntity<String> deleteMessage() {
         logs.clear();
-        return new ResponseEntity<String>(String.join("/", logs), HttpStatus.OK);
+        return new ResponseEntity<>(String.join("/", logs), HttpStatus.OK);
     }
 }
 
