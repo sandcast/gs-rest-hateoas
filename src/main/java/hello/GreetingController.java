@@ -57,9 +57,13 @@ public class GreetingController {
         if (included != null) {
             for (int i = 0; i < included.length(); i++) {
                 JSONObject object = included.getJSONObject(i);
-                if (object.getString("type").equals("reward") && object.getJSONObject("attributes").getString("title").startsWith("Snitches")) {
-                    reward = object.getJSONObject("attributes").getString("title");
-                    break;
+                try {
+                    if (object.getString("type").equals("reward") && object.getJSONObject("attributes").getString("title").startsWith("Snitches")) {
+                        reward = object.getJSONObject("attributes").getString("title");
+                        break;
+                    }
+                } catch (Exception e) {
+                    Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, "parse nad no title");
                 }
             }
             final String realReward = reward;
