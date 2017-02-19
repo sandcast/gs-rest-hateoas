@@ -102,17 +102,18 @@ public class GreetingController {
         logs.clear();
         return new ResponseEntity<>(String.join("/", logs), HttpStatus.OK);
     }
-}
 
-class Test implements EventListener {
+    class Test implements EventListener {
 
-    @Override
-    public void onEvent(Event event) {
-        if (event instanceof MessageReceivedEvent) {
-            MessageReceivedEvent e = (MessageReceivedEvent) event;
-            System.out.println(e.getMessage().getContent());
-            if (!e.getAuthor().isBot()) {
-                e.getChannel().sendMessage("simon says " + e.getMessage().getContent()).complete();
+        @Override
+        public void onEvent(Event event) {
+            if (event instanceof MessageReceivedEvent) {
+                MessageReceivedEvent e = (MessageReceivedEvent) event;
+                System.out.println(e.getMessage().getContent());
+                if (!e.getAuthor().isBot()) {
+                    e.getChannel().sendMessage("simon says " + e.getMessage().getContent()).complete();
+                    logs.add(e.getMessage().getContent());
+                }
             }
         }
     }
