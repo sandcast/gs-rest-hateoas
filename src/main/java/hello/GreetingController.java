@@ -49,29 +49,29 @@ public class GreetingController {
         } catch (LoginException | IllegalArgumentException | InterruptedException | RateLimitedException ex) {
             Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, null, ex);
         }
-        API apiClient = new API(System.getenv("PATREON_API_TOKEN"));
-        JSONObject userResponse = apiClient.fetchCampaign();
-        Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, userResponse.toString(2));
-        JSONArray included = userResponse.getJSONArray("included");
-        String reward = null;
-        if (included != null) {
-            for (int i = 0; i < included.length(); i++) {
-                JSONObject object = included.getJSONObject(i);
-                try {
-                    if (object.getString("type").equals("reward") && object.getJSONObject("attributes").getString("title").startsWith("Snitches")) {
-                        reward = object.getJSONObject("attributes").getString("title");
-                        break;
-                    }
-                } catch (Exception e) {
-                    Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, "parse nad no title");
-                }
-            }
-            final String realReward = reward;
-            jda.getTextChannels().forEach(t -> {
-                t.sendMessage("Hearst found patreon campaign " + realReward).complete();
-                Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, t.getName());
-            });
-        }
+//        API apiClient = new API(System.getenv("PATREON_API_TOKEN"));
+//        JSONObject userResponse = apiClient.fetchCampaign();
+//        Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, userResponse.toString(2));
+//        JSONArray included = userResponse.getJSONArray("included");
+//        String reward = null;
+//        if (included != null) {
+//            for (int i = 0; i < included.length(); i++) {
+//                JSONObject object = included.getJSONObject(i);
+//                try {
+//                    if (object.getString("type").equals("reward") && object.getJSONObject("attributes").getString("title").startsWith("Snitches")) {
+//                        reward = object.getJSONObject("attributes").getString("title");
+//                        break;
+//                    }
+//                } catch (Exception e) {
+//                    Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, "parse nad no title");
+//                }
+//            }
+//            final String realReward = reward;
+//            jda.getTextChannels().forEach(t -> {
+//                t.sendMessage("Hearst found patreon campaign " + realReward).complete();
+//                Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, t.getName());
+//            });
+//        }
     }
 
     @RequestMapping("/greeting")
@@ -83,13 +83,13 @@ public class GreetingController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/message")
-    public HttpEntity<String> postMessage(@RequestBody String body) {
-        logs.add(body);
+    public HttpEntity<String> postMessage(@RequestParam(value = "PLAYER", required = false) String player, @RequestParam(value = "CONTENT", required = false) String content) {
+        logs.add(player);
         jda.getTextChannels().forEach(t -> {
-            t.sendMessage(body).complete();
-            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, body);
+            t.sendMessage(player + ":" + content).complete();
+            Logger.getLogger(GreetingController.class.getName()).log(Level.SEVERE, player + ":" + content);
         });
-        return new ResponseEntity<>(body, HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping(method = RequestMethod.GET, path = "/message")
