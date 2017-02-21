@@ -1,7 +1,5 @@
 package hello;
 
-import com.patreon.API;
-import com.patreon.OAuth;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -14,17 +12,16 @@ import net.dv8tion.jda.core.events.Event;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import net.dv8tion.jda.core.hooks.EventListener;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.*;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.context.request.WebRequest;
+import static sun.audio.AudioPlayer.player;
 
 @RestController
 public class GreetingController {
@@ -83,7 +80,9 @@ public class GreetingController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/message")
-    public HttpEntity<String> postMessage(@RequestParam(value = "PLAYER", required = false) String player, @RequestParam(value = "CONTENT", required = false) String content) {
+    public HttpEntity<String> postMessage(WebRequest request) {
+        String player = request.getParameter("PLAYER");
+        String content = request.getParameter("CONTENT");
         logs.add(player);
         jda.getTextChannels().forEach(t -> {
             t.sendMessage(player + ":" + content).complete();
